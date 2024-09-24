@@ -1,0 +1,24 @@
+{
+  "name": "js-natural-language-processing",
+  "version": "1.0.0",
+  "description": "natural language pre-processing toolkit in javascript, includes several key tools like text preprocessing, sentiment analysis and more...",
+  "main": "server.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "keywords": [
+    "nlp",
+    "natural",
+    "language",
+    "processing",
+    "sentiment",
+    "text",
+    "preprocessing",
+    "toolkit"
+  ],
+  "author": "Simon Reinhardt",
+  "license": "MIT",
+  "devDependencies": {
+    "jest": "^29.7.0"
+  }
+}
