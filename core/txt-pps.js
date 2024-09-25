@@ -8,7 +8,7 @@
  *  Current List Of Functions:
  *
  *  `normalizeText(text)`: Convert text to lowercase, remove special characters and punctuation.
- *  `removeStopwords(text)`: Remove common stopwords from a given text.
+ *  `removeStopwords(text, list)`: Remove common stopwords from a given text.
  *  `stemWords(words)`: Apply stemming to reduce words to their root forms.
  *  `lemmatizeWords(words)`: Lemmatize words to get their base dictionary forms.
  *  `cleanText(text)`: Remove unwanted characters, numbers, and extra spaces from text.
@@ -28,35 +28,99 @@
  *      - Multi-language support
  */
 
+/**
+ *
+ *  Imports: Various Libraries / Files / Utilities
+ *
+ */
+
+const log = require("../utils/logger");
+
+const en_stopwords = require("../lib/stopwords/en_stopwords");
+
+/**
+ *
+ *  Core of the module
+ */
+
 class TxtProcessor {
+	/// Removes all unnecessary things from the text, keeping only the numbers and lowercase text:
+	///  "  Hello World!  " => "hello world"
+
 	normalizeText(t) {
-        // not a string
-		if (typeof t !== "string")
-			return "TxtProcessor - normalizeText(text) |  Input must be a string";
+		let nt;
+		try {
+			// not a string
+			if (typeof t !== "string") {
+				throw new TypeError(
+					"TxtProcessor - removeStopwords(text) |  Input must be a string"
+				);
+			}
 
-		// empty string case
-		if (t == " " || t == "") return t;
+			// empty string case
+			if (t.trim() === "") return t;
 
-		// step 1: convert uppercase letters.
-		let nt = t
-			.trim()
-			.toLowerCase()
+			// step 1: convert uppercase letters.
+			nt = t
+				.trim()
+				.toLowerCase()
 
-			// step 2: // Remove diacritics (accents)
-			.normalize("NFD")
-			.replace(/[\u0300-\u036f]/g, "")
+				// step 2: // Remove diacritics (accents)
+				.normalize("NFD")
+				.replace(/[\u0300-\u036f]/g, "")
 
-			// step 3: remove punctuation
-			.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()@]/g, "")
+				// step 3: remove punctuation
+				.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()@]/g, "")
 
-			// step 4: remove special characters
-			.replace(/[^\w\s]/g, "")
+				// step 4: remove special characters
+				.replace(/[^\w\s]/g, "")
 
-			// step 5: replace multiple spaces with one
-			.trim()
-			.replace(/\s+/g, " ");
+				// step 5: replace multiple spaces with one
+				.replace(/\s+/g, " ")
+				.trim();
 
-		return nt;
+			return nt;
+		} catch (err) {
+			log("Error TextProcessor - NormalizeText", { input: t, output: nt }, err);
+		}
+	}
+
+	/// Takes the list of stopwords provided and removes them from the text
+	removeStopwords(t, l = en_stopwords) {
+		let ft;
+		try {
+			/// stopwords words which, due to their high frequency in text, often don’t offer significant insights on their own.
+			///  "  Hello World!  " => "hello world"
+
+			if (typeof t !== "string") {
+				throw new TypeError(
+					"TxtProcessor - removeStopwords(text) |  Input must be a string"
+				);
+			}
+
+			// empty string case
+			if (t == " " || t == "") return t;
+
+			/// search whether the stopwords exist inside the text or not.
+
+			ft = t
+				// case sensitivity
+				.toLowerCase()
+
+				// get the words
+				.split(" ")
+
+				// filter out the stopwords
+				.filter((w) => !en_stopwords.has(w))
+
+				// join the filtered words in a string
+				.join(" ");
+
+			console.log(t.split());
+			return ft;
+		} catch (err) {
+			log("Error: TextProcessor - Remove Stopwords", { input: t, output: ft }, err);
+		}
 	}
 }
 

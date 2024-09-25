@@ -1,6 +1,5 @@
-function log(name = "Unnamed Log Function", attributes = {}, error = null) {
-	
-    const timestamp = new Date().toISOString();
+module.exports = function log(name = "Unnamed Log Function", attributes = {}, error = null) {
+	const timestamp = new Date().toISOString();
 	const formattedAttributes = JSON.stringify(attributes, null, 2); // Indent for better readability
 
 	let message = `[${timestamp}] ${name}`;
@@ -10,8 +9,5 @@ function log(name = "Unnamed Log Function", attributes = {}, error = null) {
 		message += `\nAttributes: ${formattedAttributes}`;
 	}
 
-	console.log(message);
-}
-
-
-module.export = { log }
+	throw new TypeError(message);
+};
