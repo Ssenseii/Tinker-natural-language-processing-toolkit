@@ -9,7 +9,7 @@
  *
  *  `normalizeText(text)`: Convert text to lowercase, remove special characters and punctuation.
  *  `removeStopwords(text, list)`: Remove common stopwords from a given text.
- *  `stemWords(words)`: Apply stemming to reduce words to their root forms.
+ *  `stemWord(word)`: Apply stemming to reduce words to their root forms.
  *  `lemmatizeWords(words)`: Lemmatize words to get their base dictionary forms.
  *  `cleanText(text)`: Remove unwanted characters, numbers, and extra spaces from text.
  *  `removePunctuation(text)`: Strip punctuation from text.
@@ -34,8 +34,13 @@
  *
  */
 
+/// Utils
 const log = require("../utils/logger");
 
+/// Functions / Algorithms
+const stemmer = require("../lib/stemmer/stemmer");
+
+/// Sets, lists and Dictionnaries
 const en_stopwords = require("../lib/stopwords/en_stopwords");
 
 /**
@@ -116,10 +121,37 @@ class TxtProcessor {
 				// join the filtered words in a string
 				.join(" ");
 
-			console.log(t.split());
 			return ft;
 		} catch (err) {
 			log("Error: TextProcessor - Remove Stopwords", { input: t, output: ft }, err);
+		}
+	}
+
+	/// Apply stemming to reduce words to their root forms
+	/// using Andargo's javascript implementation
+	/// link: https://tartarus.org/martin/PorterStemmer/js.txt
+
+	stemWord(w) {
+		try {
+			// Not a string
+			if (typeof w !== "string") {
+				throw new TypeError(
+					"TxtProcessor - stemWord(word) |  Input must be a word of type string"
+				);
+			}
+
+			if (w.trim().split(" ").length > 1) {
+				throw new TypeError("TxtProcessor - stemWord(word) |  Input must be one word");
+			}
+
+			// Empty string case & less than 3 chars
+			if (w.trim() === "") return w;
+			if (w.length < 3) return w;
+
+			// the algorithm responsible
+			return stemmer(w);
+		} catch (err) {
+			log("Error: TextProcessor - stemWord", { input: w }, err);
 		}
 	}
 }

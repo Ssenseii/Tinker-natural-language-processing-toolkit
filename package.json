@@ -1,5 +1,5 @@
 {
-  "name": "js-natural-language-processing",
+  "name": "tinker-nlp-js",
   "version": "1.0.0",
   "description": "natural language pre-processing toolkit in javascript, includes several key tools like text preprocessing, sentiment analysis and more...",
   "main": "server.js",
