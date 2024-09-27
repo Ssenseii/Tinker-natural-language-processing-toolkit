@@ -154,6 +154,29 @@ class TxtProcessor {
 			log("Error: TextProcessor - stemWord", { input: w }, err);
 		}
 	}
+
+	lemmatizeWord(t) {
+		console.log("currently Unimplemented - Coming soon");
+	}
+
+	// Basically removes unwanted characters from text, or trims them, or something...
+	cleanText(t, u = " ") {
+		try {
+			if (typeof t !== "string") {
+				throw new TypeError(
+					"TxtProcessor - cleanText(text) |  Input must be a text of type string"
+				);
+			}
+
+			if (u === " " || u == "" ) return t.trim();
+
+			const regex = new RegExp(`\\${u}`, "g"); // Creat
+
+			return t.replace(regex, "");
+		} catch (err) {
+			log("Error: TextProcessor - cleanText", { input: t }, err);
+		}
+	}
 }
 
 module.exports = TxtProcessor;
