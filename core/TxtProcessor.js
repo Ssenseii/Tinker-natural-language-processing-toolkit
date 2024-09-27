@@ -13,7 +13,7 @@
  *  `lemmatizeWords(words)`: Lemmatize words to get their base dictionary forms.
  *  `cleanText(text)`: Remove unwanted characters, numbers, and extra spaces from text.
  *  `removePunctuation(text)`: Strip punctuation from text.
- *  `replaceSynonyms(text)`: Replace words in the text with their synonyms.
+ *  `replaceCommonSynonym(text)`: Replace word with its most common synonym.
  *  `expandContractions(text)`: Expand common contractions (e.g., "don't" -> "do not").
  *  `lowercaseText(text)`: Convert the entire text to lowercase.
  *  `stripHTMLTags(text)`: Remove any HTML tags from the text.
@@ -42,6 +42,7 @@ const stemmer = require("../lib/stemmer/stemmer");
 
 /// Sets, lists and Dictionnaries
 const en_stopwords = require("../lib/stopwords/en_stopwords");
+const dict_contractions = require("../lib/contractions/contractions");
 
 /**
  *
@@ -86,7 +87,7 @@ class TxtProcessor {
 
 			return nt;
 		} catch (err) {
-			log("Error TextProcessor - NormalizeText", { input: t, output: nt }, err);
+			log("Error: TextProcessor - NormalizeText", { input: t, output: nt }, err);
 		}
 	}
 
@@ -168,7 +169,7 @@ class TxtProcessor {
 				);
 			}
 
-			if (u === " " || u == "" ) return t.trim();
+			if (u === " " || u == "") return t.trim();
 
 			const regex = new RegExp(`\\${u}`, "g"); // Creat
 
@@ -177,7 +178,6 @@ class TxtProcessor {
 			log("Error: TextProcessor - cleanText", { input: t }, err);
 		}
 	}
-
 
 	// Remove Punctuation from text
 	removePunctuation(t) {
@@ -191,14 +191,64 @@ class TxtProcessor {
 			if (t === " " || t == "") return t.trim();
 
 			return t.replace(/[.,\/#?!$%\^&\*;:{}=\-_`~()'"]/g, "");
-
 		} catch (err) {
 			log("Error: TextProcessor - removePunctuation", { input: t }, err);
 		}
 	}
 
+	// replace words with their most common synonym.
+	async replaceCommonSynonym(w) {
+		try {
+			if (typeof w !== "string") {
+				throw new TypeError(
+					"TxtProcessor - replaceSynonym(text) |  Input must be a text of type string"
+				);
+			}
 
-	
+			if (w === " " || w == "") return w.trim();
+
+			if (w.trim().split(" ").length > 1) {
+				throw new TypeError(
+					"TxtProcessor - replaceSynonym(word) |  Input must be one word"
+				);
+			}
+
+			const response = await fetch(`https://api.datamuse.com/words?rel_syn=${w}&max=1`);
+			const data = await response.json();
+
+			return data.length > 0 ? data[0].word : w;
+		} catch (err) {
+			log("Error: TextProcessor - replaceSynonym(text)", { input: w }, err);
+		}
+	}
+
+	expandContractions(t) {
+		try {
+			if (typeof t !== "string") {
+				throw new TypeError(
+					"TxtProcessor - replaceSynonym(text) |  Input must be a text of type string"
+				);
+			}
+
+			if (t.trim() === "") return t.trim();
+
+			let ft = t
+				.split(" ")
+				.map((w) => {
+					if (w.includes("'") && dict_contractions[w.toLowerCase()]) {
+						let expanded = dict_contractions[w.toLowerCase()].split("/")[0]; // Take the first part if there's a '/'
+						return expanded.trim();
+					}
+					return w;
+				})
+				.join(" ");
+
+			return ft;
+
+		} catch (err) {
+			log("Error: TextProcessor - replaceSynonym(text)", { input: t }, err);
+		}
+	}
 }
 
 module.exports = TxtProcessor;
