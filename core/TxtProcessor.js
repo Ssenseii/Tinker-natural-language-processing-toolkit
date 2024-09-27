@@ -177,6 +177,28 @@ class TxtProcessor {
 			log("Error: TextProcessor - cleanText", { input: t }, err);
 		}
 	}
+
+
+	// Remove Punctuation from text
+	removePunctuation(t) {
+		try {
+			if (typeof t !== "string") {
+				throw new TypeError(
+					"TxtProcessor - removePunctuation(text) |  Input must be a text of type string"
+				);
+			}
+
+			if (t === " " || t == "") return t.trim();
+
+			return t.replace(/[.,\/#?!$%\^&\*;:{}=\-_`~()'"]/g, "");
+
+		} catch (err) {
+			log("Error: TextProcessor - removePunctuation", { input: t }, err);
+		}
+	}
+
+
+	
 }
 
 module.exports = TxtProcessor;

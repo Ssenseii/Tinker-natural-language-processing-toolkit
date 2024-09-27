@@ -1,5 +1,4 @@
-// __tests__/txt-pps.test.js
-const TxtProcessor = require("../core/txt-pps"); // Adjust the path as needed
+const TxtProcessor = require("../core/TxtProcessor"); 
 
 describe("TxtProcessor", () => {
 	let txtProcessor;

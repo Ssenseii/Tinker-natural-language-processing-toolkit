@@ -1,3 +1,3 @@
-const TxtProcessor = require("./core/txt-pps");
+const TxtProcessor = require("./core/TxtProcessor");
 
 const txtProcessor = new TxtProcessor();

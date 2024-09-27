@@ -1,4 +1,4 @@
-const TxtProcessor = require("../core/txt-pps"); // Adjust the path as needed
+const TxtProcessor = require("../core/TxtProcessor");
 
 describe("TxtProcessor - cleanText", () => {
 	let txtProcessor;
