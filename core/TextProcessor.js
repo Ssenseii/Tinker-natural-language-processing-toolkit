@@ -49,6 +49,50 @@ const en_stopwords = require("../lib/stopwords/en_stopwords");
 const en_dict_contractions = require("../lib/contractions/en_contractions");
 const en_negation_words = require("../lib/negation/en_negation_words");
 
+const digits = new Map([
+	["1", "one"],
+	["2", "two"],
+	["3", "three"],
+	["4", "four"],
+	["5", "five"],
+	["6", "six"],
+	["7", "seven"],
+	["8", "eight"],
+	["9", "nine"],
+]);
+
+const teens = new Map([
+	["0", "ten"],
+	["1", "eleven"],
+	["2", "twelve"],
+	["3", "thirteen"],
+	["4", "fourteen"],
+	["5", "fifteen"],
+	["6", "sixteen"],
+	["7", "seventeen"],
+	["8", "eighteen"],
+	["9", "nineteen"],
+]);
+
+const tens = new Map([
+	["0", ""],
+	["2", "twenty"],
+	["3", "thirty"],
+	["4", "forty"],
+	["5", "fifty"],
+	["6", "sixty"],
+	["7", "seventy"],
+	["8", "eighty"],
+	["9", "ninety"],
+]);
+
+const powers = new Map([
+	[3, "thousand"],
+	[6, "million"],
+	[9, "billion"],
+	[12, "trillion"],
+]);
+
 /**
  *
  *  Core of the module
@@ -334,13 +378,10 @@ class TextProcessor {
 		}
 	}
 
-	/// Replace Emojis to their original words
-
-	// Function to replace emojis in text
+	// Function to replace emojis in text with their original words
 	replaceEmojis(t) {
-		
 		let ft = t;
-		
+
 		try {
 			if (typeof t !== "string") {
 				throw new TypeError("Input must be a text of type string");
@@ -360,12 +401,127 @@ class TextProcessor {
 			});
 
 			return ft;
-			
 		} catch (err) {
 			log("Error: TextProcessor - detectNegations(text)", { input: t, output: ft }, err);
-			return t; 
+			return t;
+		}
+	}
+
+	// replaceNumber: converts numbers in the string to their word equivalents
+
+	/* https://github.com/humanwhocodes/number-to-words/blob/main/src/number-to-words.js */
+	/* I	 was getting stupid trying to use recursion since it wouldn't work well with really big numbers. */
+
+	static numberToWords(value) {
+		
+
+		if (typeof value !== "number" || value < 0 || value !== Math.round(value)) {
+			throw new TypeError("Parameter must be a positive integer.");
+		}
+
+		// special case: 0 doesn't need any more work
+		if (value === 0) {
+			return "zero";
+		}
+
+		const string = value.toString();
+		const result = [];
+
+		for (let i = string.length - 1, pos = 0; i >= 0; i--, pos++) {
+			const c = string[i];
+
+			// special case: never add anything for zero
+			if (c === "0") {
+				continue;
+			}
+
+			switch (pos % 3) {
+				case 0:
+					if (pos > 0) {
+						result.unshift(powers.get(pos));
+					}
+
+					if (digits.has(c)) {
+						result.unshift(digits.get(c));
+					}
+
+					break;
+
+				case 1: {
+					let words;
+
+					const lastWord = result.shift();
+
+					// special case: 10-19
+					if (c === "1") {
+						words = teens.get(string[i + 1]);
+					} else {
+						//TODO: Clean this up. Yuck.
+						words = tens.get(c) || lastWord;
+						if (lastWord && words !== lastWord) {
+							words = words + "-" + lastWord;
+						}
+					}
+
+					result.unshift(words);
+					break;
+				}
+
+				case 2:
+					result.unshift(digits.get(c) + " hundred");
+					break;
+			}
+		}
+
+		return result.join(" ");
+	}
+
+	// replaceNumber: converts numeric values in the string to their word equivalents
+	replaceNumber(t) {
+		let ft;
+		try {
+			// Check if the input is a string or number
+			if (typeof t !== "string" && typeof t !== "number") {
+				throw new TypeError("Input must be a text of type string or a number");
+			}
+
+			// Regular expression to match numbers (can match combinations like 123, 1,000,000, etc.)
+			const numberRegex = /\d+/g;
+
+			// Replace each number in the string with its word equivalent
+			ft = t
+				.toString()
+				.replace(numberRegex, (match) => TextProcessor.numberToWords(parseInt(match, 10)));
+
+			console.log(t.match(numberRegex));
+
+			return ft;
+		} catch (err) {
+			log("Error: TextProcessor - replaceNumber(text)", { input: t, output: ft }, err);
+			return t;
+		}
+	}
+
+	// removeNumbers: removes all numeric characters from the input text
+	removeNumbers(t) {
+		let ft;
+		try {
+			if (typeof t !== "string") {
+				throw new TypeError("Input must be a text of type string");
+			}
+
+			// Regular expression to match numbers
+			const numberRegex = /\d+/g;
+
+			// Remove all digits by replacing them with an empty string
+			ft = t.replace(numberRegex, "");
+			return ft;
+		} catch (err) {
+			log("Error: TextProcessor - removeNumber(text)", { input: t, output: ft }, err);
+			return t;
 		}
 	}
 }
 
+module.exports = TextProcessor;
 module.exports = TextProcessor;
