@@ -1,6 +1,6 @@
 const contractions = require("./lib/contractions/contractions");
-const TxtProcessor = require("./core/TxtProcessor");
+const TextProcessor = require("./core/TextProcessor");
 
-const txtProcessor = new TxtProcessor();
+const textProcessor = new TextProcessor();
 
-console.log(txtProcessor.expandContractions("hello they're eating my crumbs"));
+console.log(textProcessor.expandContractions("hello they're eating my crumbs"));

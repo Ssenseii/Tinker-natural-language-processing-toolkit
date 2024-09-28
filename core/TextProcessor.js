@@ -49,7 +49,7 @@ const dict_contractions = require("../lib/contractions/contractions");
  *  Core of the module
  */
 
-class TxtProcessor {
+class TextProcessor {
 	/// Removes all unnecessary things from the text, keeping only the numbers and lowercase text:
 	///  "  Hello World!  " => "hello world"
 
@@ -59,7 +59,7 @@ class TxtProcessor {
 			// not a string
 			if (typeof t !== "string") {
 				throw new TypeError(
-					"TxtProcessor - removeStopwords(text) |  Input must be a string"
+					"TextProcessor - removeStopwords(text) |  Input must be a string"
 				);
 			}
 
@@ -100,7 +100,7 @@ class TxtProcessor {
 
 			if (typeof t !== "string") {
 				throw new TypeError(
-					"TxtProcessor - removeStopwords(text) |  Input must be a string"
+					"TextProcessor - removeStopwords(text) |  Input must be a string"
 				);
 			}
 
@@ -137,12 +137,12 @@ class TxtProcessor {
 			// Not a string
 			if (typeof w !== "string") {
 				throw new TypeError(
-					"TxtProcessor - stemWord(word) |  Input must be a word of type string"
+					"TextProcessor - stemWord(word) |  Input must be a word of type string"
 				);
 			}
 
 			if (w.trim().split(" ").length > 1) {
-				throw new TypeError("TxtProcessor - stemWord(word) |  Input must be one word");
+				throw new TypeError("TextProcessor - stemWord(word) |  Input must be one word");
 			}
 
 			// Empty string case & less than 3 chars
@@ -152,7 +152,7 @@ class TxtProcessor {
 			// the algorithm responsible
 			return stemmer(w);
 		} catch (err) {
-			log("Error: TextProcessor - stemWord", { input: w }, err);
+			log("Error: TextProcessor - stemWord(word)", { input: w }, err);
 		}
 	}
 
@@ -165,7 +165,7 @@ class TxtProcessor {
 		try {
 			if (typeof t !== "string") {
 				throw new TypeError(
-					"TxtProcessor - cleanText(text) |  Input must be a text of type string"
+					"TextProcessor - cleanText(text) |  Input must be a text of type string"
 				);
 			}
 
@@ -175,7 +175,7 @@ class TxtProcessor {
 
 			return t.replace(regex, "");
 		} catch (err) {
-			log("Error: TextProcessor - cleanText", { input: t }, err);
+			log("Error: TextProcessor - cleanText(text)", { input: t }, err);
 		}
 	}
 
@@ -184,7 +184,7 @@ class TxtProcessor {
 		try {
 			if (typeof t !== "string") {
 				throw new TypeError(
-					"TxtProcessor - removePunctuation(text) |  Input must be a text of type string"
+					"TextProcessor - removePunctuation(text) |  Input must be a text of type string"
 				);
 			}
 
@@ -192,7 +192,7 @@ class TxtProcessor {
 
 			return t.replace(/[.,\/#?!$%\^&\*;:{}=\-_`~()'"]/g, "");
 		} catch (err) {
-			log("Error: TextProcessor - removePunctuation", { input: t }, err);
+			log("Error: TextProcessor - removePunctuation(text)", { input: t }, err);
 		}
 	}
 
@@ -201,7 +201,7 @@ class TxtProcessor {
 		try {
 			if (typeof w !== "string") {
 				throw new TypeError(
-					"TxtProcessor - replaceSynonym(text) |  Input must be a text of type string"
+					"TextProcessor - replaceCommonSynonym(word) |  Input must be a text of type string"
 				);
 			}
 
@@ -209,7 +209,7 @@ class TxtProcessor {
 
 			if (w.trim().split(" ").length > 1) {
 				throw new TypeError(
-					"TxtProcessor - replaceSynonym(word) |  Input must be one word"
+					"TextProcessor - replaceCommonSynonym(word) |  Input must be one word"
 				);
 			}
 
@@ -218,21 +218,23 @@ class TxtProcessor {
 
 			return data.length > 0 ? data[0].word : w;
 		} catch (err) {
-			log("Error: TextProcessor - replaceSynonym(text)", { input: w }, err);
+			log("Error: TextProcessor - replaceCommonSynonym(word)", { input: w }, err);
 		}
 	}
 
+	/// Expands contractions like "they're" to they are.
 	expandContractions(t) {
+		let ft;
 		try {
 			if (typeof t !== "string") {
 				throw new TypeError(
-					"TxtProcessor - replaceSynonym(text) |  Input must be a text of type string"
+					"TextProcessor - replaceSynonym(t) |  Input must be a text of type string"
 				);
 			}
 
 			if (t.trim() === "") return t.trim();
 
-			let ft = t
+			ft = t
 				.split(" ")
 				.map((w) => {
 					if (w.includes("'") && dict_contractions[w.toLowerCase()]) {
@@ -241,14 +243,32 @@ class TxtProcessor {
 					}
 					return w;
 				})
-				.join(" ");
+				.join(" "); /// TODO: make it return variations of the words that has multiple expansions
 
 			return ft;
+		} catch (err) {
+			log("Error: TextProcessor - replaceSynonym(t)", { input: t, output: ft }, err);
+		}
+	}
+
+	/// LowerCase Text (like???)
+	lowerCaseText(t) {
+		let ft;
+		try {
+			if (typeof t !== "string") {
+				throw new TypeError(
+					"TextProcessor - lowerCaseText(text) |  Input must be a text of type string"
+				);
+			}
+
+			if (t.trim() === "") return t.trim();
+
+			return ft = t.toLowerCase().trim();
 
 		} catch (err) {
-			log("Error: TextProcessor - replaceSynonym(text)", { input: t }, err);
+			log("Error: TextProcessor - lowerCaseText(text)", { input: t }, err);
 		}
 	}
 }
 
-module.exports = TxtProcessor;
+module.exports = TextProcessor;

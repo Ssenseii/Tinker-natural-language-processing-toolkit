@@ -1,16 +1,16 @@
-const TxtProcessor = require("../core/TxtProcessor");
+const TextProcessor = require("../core/TextProcessor");
 
-describe("TxtProcessor - cleanText", () => {
-	let txtProcessor;
+describe("TextProcessor - cleanText", () => {
+	let textProcessor;
 
 	beforeEach(() => {
-		txtProcessor = new TxtProcessor();
+		textProcessor = new TextProcessor();
 	});
 
 	test("should trim whitespace by default", () => {
 		const inputText = "   Hello world!   ";
 		const expectedOutput = "Hello world!";
-		const cleanedText = txtProcessor.cleanText(inputText);
+		const cleanedText = textProcessor.cleanText(inputText);
 
 		expect(cleanedText).toBe(expectedOutput);
 	});
@@ -19,7 +19,7 @@ describe("TxtProcessor - cleanText", () => {
 		const inputText = "He.llo wo.rld!";
 		const unwantedChar = ".";
 		const expectedOutput = "Hello world!";
-		const cleanedText = txtProcessor.cleanText(inputText, unwantedChar);
+		const cleanedText = textProcessor.cleanText(inputText, unwantedChar);
 
 		expect(cleanedText).toBe(expectedOutput);
 	});
@@ -28,7 +28,7 @@ describe("TxtProcessor - cleanText", () => {
 		const inputText = "   Hello world!   ";
 		const unwantedChar = "";
 		const expectedOutput = "Hello world!";
-		const cleanedText = txtProcessor.cleanText(inputText, unwantedChar);
+		const cleanedText = textProcessor.cleanText(inputText, unwantedChar);
 
 		expect(cleanedText).toBe(expectedOutput);
 	});
@@ -37,7 +37,7 @@ describe("TxtProcessor - cleanText", () => {
 		const inputText = 12345;
 
 		expect(() => {
-			txtProcessor.cleanText(inputText);
+			textProcessor.cleanText(inputText);
 		}).toThrow(TypeError);
 	});
 
@@ -45,7 +45,7 @@ describe("TxtProcessor - cleanText", () => {
 		const inputText = "Hello world!";
 		const unwantedChar = " ";
 		const expectedOutput = "Hello world!";
-		const cleanedText = txtProcessor.cleanText(inputText, unwantedChar);
+		const cleanedText = textProcessor.cleanText(inputText, unwantedChar);
 
 		expect(cleanedText).toBe(expectedOutput);
 	});
@@ -54,7 +54,7 @@ describe("TxtProcessor - cleanText", () => {
 		const inputText = "Hel@lo Wo@rld!";
 		const unwantedChar = "@";
 		const expectedOutput = "Hello World!";
-		const cleanedText = txtProcessor.cleanText(inputText, unwantedChar);
+		const cleanedText = textProcessor.cleanText(inputText, unwantedChar);
 
 		expect(cleanedText).toBe(expectedOutput);
 	});

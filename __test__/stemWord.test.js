@@ -1,21 +1,20 @@
-const TxtProcessor = require("../core/TxtProcessor");
+const TextProcessor = require("../core/TextProcessor");
 
-describe("TxtProcessor", () => {
-	let txtProcessor;
+describe("TextProcessor", () => {
+	let textProcessor;
 
 	beforeEach(() => {
-		txtProcessor = new TxtProcessor();
+		textProcessor = new TextProcessor();
 	});
-
 
 	/**
 	 * 	StemWord
 	 */
 
-    test("stemWord should return stemmed version of the word", () => {
+	test("stemWord should return stemmed version of the word", () => {
 		const inputWord1 = "running";
 		const expectedOutput1 = "run"; // Assuming stemmer('running') returns 'run'
-		const stemmedWord1 = txtProcessor.stemWord(inputWord1);
+		const stemmedWord1 = textProcessor.stemWord(inputWord1);
 
 		expect(stemmedWord1).toBe(expectedOutput1);
 	});
@@ -23,7 +22,7 @@ describe("TxtProcessor", () => {
 	test("stemWord should return the word if it is less than 3 characters long", () => {
 		const inputWord = "go";
 		const expectedOutput = "go";
-		const stemmedWord = txtProcessor.stemWord(inputWord);
+		const stemmedWord = textProcessor.stemWord(inputWord);
 
 		expect(stemmedWord).toBe(expectedOutput);
 	});
@@ -31,7 +30,7 @@ describe("TxtProcessor", () => {
 	test("stemWord should return the word if it is an empty string", () => {
 		const inputWord = "";
 		const expectedOutput = "";
-		const stemmedWord = txtProcessor.stemWord(inputWord);
+		const stemmedWord = textProcessor.stemWord(inputWord);
 
 		expect(stemmedWord).toBe(expectedOutput);
 	});
@@ -40,7 +39,7 @@ describe("TxtProcessor", () => {
 		const inputWord = 12345;
 
 		expect(() => {
-			txtProcessor.stemWord(inputWord);
+			textProcessor.stemWord(inputWord);
 		}).toThrow(TypeError);
 	});
 
@@ -48,8 +47,7 @@ describe("TxtProcessor", () => {
 		const inputWord = "multiple words";
 
 		expect(() => {
-			txtProcessor.stemWord(inputWord);
+			textProcessor.stemWord(inputWord);
 		}).toThrow(TypeError);
 	});
-
 });
