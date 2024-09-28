@@ -3,3 +3,4 @@ This is a list of things the project needs as I encounter them:
 - lib/stopwords: a list of stopwords in other languages such as arabic, french... 
 - TextProcessor.js: language processing for other languages
 - TextProcessor.js: expandContractions returns variations of the words that has multiple expansions (/)
+

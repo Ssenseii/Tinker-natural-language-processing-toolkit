@@ -20,5 +20,8 @@
   "license": "MIT",
   "devDependencies": {
     "jest": "^29.7.0"
+  },
+  "dependencies": {
+    "colors": "^1.4.0"
   }
 }

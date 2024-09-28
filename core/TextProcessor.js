@@ -41,8 +41,13 @@ const log = require("../utils/logger");
 const stemmer = require("../lib/stemmer/stemmer");
 
 /// Sets, lists and Dictionnaries
+
+const emojiData = require("../lib/emojis/emojiMap");
+
+/* English */
 const en_stopwords = require("../lib/stopwords/en_stopwords");
-const dict_contractions = require("../lib/contractions/contractions");
+const en_dict_contractions = require("../lib/contractions/en_contractions");
+const en_negation_words = require("../lib/negation/en_negation_words");
 
 /**
  *
@@ -88,6 +93,7 @@ class TextProcessor {
 			return nt;
 		} catch (err) {
 			log("Error: TextProcessor - NormalizeText", { input: t, output: nt }, err);
+			return t;
 		}
 	}
 
@@ -125,6 +131,7 @@ class TextProcessor {
 			return ft;
 		} catch (err) {
 			log("Error: TextProcessor - Remove Stopwords", { input: t, output: ft }, err);
+			return t;
 		}
 	}
 
@@ -153,6 +160,7 @@ class TextProcessor {
 			return stemmer(w);
 		} catch (err) {
 			log("Error: TextProcessor - stemWord(word)", { input: w }, err);
+			return w;
 		}
 	}
 
@@ -176,6 +184,7 @@ class TextProcessor {
 			return t.replace(regex, "");
 		} catch (err) {
 			log("Error: TextProcessor - cleanText(text)", { input: t }, err);
+			return t;
 		}
 	}
 
@@ -193,6 +202,7 @@ class TextProcessor {
 			return t.replace(/[.,\/#?!$%\^&\*;:{}=\-_`~()'"]/g, "");
 		} catch (err) {
 			log("Error: TextProcessor - removePunctuation(text)", { input: t }, err);
+			return t;
 		}
 	}
 
@@ -219,6 +229,7 @@ class TextProcessor {
 			return data.length > 0 ? data[0].word : w;
 		} catch (err) {
 			log("Error: TextProcessor - replaceCommonSynonym(word)", { input: w }, err);
+			return w;
 		}
 	}
 
@@ -237,8 +248,8 @@ class TextProcessor {
 			ft = t
 				.split(" ")
 				.map((w) => {
-					if (w.includes("'") && dict_contractions[w.toLowerCase()]) {
-						let expanded = dict_contractions[w.toLowerCase()].split("/")[0]; // Take the first part if there's a '/'
+					if (w.includes("'") && en_dict_contractions[w.toLowerCase()]) {
+						let expanded = en_dict_contractions[w.toLowerCase()].split("/")[0]; // Take the first part if there's a '/'
 						return expanded.trim();
 					}
 					return w;
@@ -248,6 +259,7 @@ class TextProcessor {
 			return ft;
 		} catch (err) {
 			log("Error: TextProcessor - replaceSynonym(t)", { input: t, output: ft }, err);
+			return t;
 		}
 	}
 
@@ -263,10 +275,95 @@ class TextProcessor {
 
 			if (t.trim() === "") return t.trim();
 
-			return ft = t.toLowerCase().trim();
-
+			return (ft = t.toLowerCase().trim());
 		} catch (err) {
-			log("Error: TextProcessor - lowerCaseText(text)", { input: t }, err);
+			log("Error: TextProcessor - lowerCaseText(text)", { input: t, output: ft }, err);
+			return t;
+		}
+	}
+
+	/// Remove HTML tags from a text.
+	stripHTMLTags(t) {
+		let ft;
+		try {
+			if (typeof t !== "string") {
+				throw new TypeError(
+					"TextProcessor - stripHTMLTags(text) |  Input must be a text of type string"
+				);
+			}
+
+			if (t.trim() === "") return t.trim();
+
+			return (ft = t.replace(/<[^>]+>/g, "").trim());
+		} catch (err) {
+			log("Error: TextProcessor - stripHTMLTags(text)", { input: t, output: ft }, err);
+			return t;
+		}
+	}
+
+	/// Detect and mark negations in a text.
+	detectNegations(t) {
+		let ft;
+		try {
+			if (typeof t !== "string") {
+				throw new TypeError("Input must be a text of type string");
+			}
+
+			if (t.trim() === "") return t.trim();
+
+			const sentences = t.split(/(?<=[.!?])\s+/);
+
+			const markedSentences = sentences.map((sentence) => {
+				const words = sentence.split(" ");
+				const markedWords = words.map((word) => {
+					// Check if the word is a negation
+					if (en_negation_words.has(word.toLowerCase())) {
+						return `[/${word}/]`; // [/Not/]
+					}
+					return word;
+				});
+
+				return markedWords.join(" ");
+			});
+
+			let ft = markedSentences.join(" ");
+			return ft;
+		} catch (err) {
+			log("Error: TextProcessor - detectNegations(text)", { input: t, output: ft }, err);
+			return t;
+		}
+	}
+
+	/// Replace Emojis to their original words
+
+	// Function to replace emojis in text
+	replaceEmojis(t) {
+		
+		let ft = t;
+		
+		try {
+			if (typeof t !== "string") {
+				throw new TypeError("Input must be a text of type string");
+			}
+
+			// Regular expression to match emojis
+			const emojiRegex = /([\u203C-\u3299]|[\uD83C-\uDBFF\uDC00-\uDFFF]+)/g;
+			const emojis = t.match(emojiRegex); // Extract all emojis
+
+			if (!emojis) return t; // Return original text if no emojis are found
+
+			// Replace each emoji with its corresponding name
+
+			emojis.forEach((emoji) => {
+				const emojiName = emojiData[emoji] || emoji; // Use the name from the map or the original emoji
+				ft = ft.replace(new RegExp(emoji, "g"), emojiName);
+			});
+
+			return ft;
+			
+		} catch (err) {
+			log("Error: TextProcessor - detectNegations(text)", { input: t, output: ft }, err);
+			return t; 
 		}
 	}
 }

@@ -1,0 +1,3 @@
+https://github.com/Fantantonio/Emoji-List-Unicode/blob/master/json/all-emoji.json
+
+Source of the emoji json.
