@@ -46,9 +46,7 @@ describe("TextProcessor", () => {
 	});
 
 	test("replaceNumber should throw an error if input is not a string", () => {
-		expect(() => textProcessor.replaceNumber(12345)).toThrow(
-			TypeError
-		);
+		expect(() => textProcessor.replaceNumber(12345)).toThrow(TypeError);
 	});
 
 	/**
@@ -82,8 +80,6 @@ describe("TextProcessor", () => {
 	});
 
 	test("removeNumbers should throw an error if input is not a string", () => {
-		expect(() => textProcessor.removeNumbers(12345)).toThrow(
-			TypeError
-		);
+		expect(() => textProcessor.removeNumbers(12345)).toThrow(TypeError);
 	});
 });

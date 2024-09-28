@@ -413,8 +413,6 @@ class TextProcessor {
 	/* I	 was getting stupid trying to use recursion since it wouldn't work well with really big numbers. */
 
 	static numberToWords(value) {
-		
-
 		if (typeof value !== "number" || value < 0 || value !== Math.round(value)) {
 			throw new TypeError("Parameter must be a positive integer.");
 		}
@@ -521,7 +519,28 @@ class TextProcessor {
 			return t;
 		}
 	}
+
+	// .replace(/\s+/g, ' ').trim()
+	// it's fairly easy to pull off like lowerCase but not matter... let's add it too
+
+	/// Remove extra whitespace from a text.
+	normalizeWhitespace(t) {
+		let ft;
+		try {
+			if (typeof t !== "string") {
+				throw new TypeError(
+					"TextProcessor - normalizeWhitespace(text) |  Input must be a text of type string"
+				);
+			}
+
+			if (t.trim() === "") return t.trim();
+
+			return (ft = t.replace(/\s+/g, " ").trim());
+		} catch (err) {
+			log("Error: TextProcessor - normalizeWhitespace(text)", { input: t, output: ft }, err);
+			return t;
+		}
+	}
 }
 
-module.exports = TextProcessor;
 module.exports = TextProcessor;
