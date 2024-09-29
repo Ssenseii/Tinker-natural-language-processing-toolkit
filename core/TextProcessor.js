@@ -479,7 +479,7 @@ class TextProcessor {
 		let ft;
 		try {
 			// Check if the input is a string or number
-			if (typeof t !== "string" && typeof t !== "number") {
+			if (typeof t !== "string") {
 				throw new TypeError("Input must be a text of type string or a number");
 			}
 
@@ -490,8 +490,6 @@ class TextProcessor {
 			ft = t
 				.toString()
 				.replace(numberRegex, (match) => TextProcessor.numberToWords(parseInt(match, 10)));
-
-			console.log(t.match(numberRegex));
 
 			return ft;
 		} catch (err) {
@@ -538,6 +536,34 @@ class TextProcessor {
 			return (ft = t.replace(/\s+/g, " ").trim());
 		} catch (err) {
 			log("Error: TextProcessor - normalizeWhitespace(text)", { input: t, output: ft }, err);
+			return t;
+		}
+	}
+
+	/// replace Abbreviations
+	replaceAbbreaviations(t){
+		console.log("currently Unimplemented - Coming soon");
+	};
+
+	/// sentence Case: Capitalize the first letter of each sentence
+	sentenceCase(t){
+		let ft;
+		try {
+			if (typeof t !== "string") {
+				throw new TypeError(
+					"TextProcessor - sentenceCase(text) |  Input must be a text of type string"
+				);
+			}
+
+			if (t.trim() === "") return t.trim();
+
+			return (ft = t
+				.split(" ")
+				.map(word => word.charAt(0).toUpperCase() + word.slice(1))
+				.join(" ")
+				.trim());
+		} catch (err) {
+			log("Error: TextProcessor - sentenceCase(text)", { input: t, output: ft }, err);
 			return t;
 		}
 	}
