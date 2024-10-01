@@ -1,4 +1,4 @@
-const TextProcessor = require("../core/TextProcessor");
+const TextProcessor = require("../../core/TextProcessor");
 
 describe("TextProcessor - sentenceCase", () => {
 	let textProcessor;
@@ -39,7 +39,7 @@ describe("TextProcessor - sentenceCase", () => {
 		expect(processedText).toBe(expectedOutput);
 	});
 
-    test("should throw an error if input is not a string", () => {
+	test("should throw an error if input is not a string", () => {
 		expect(() => textProcessor.sentenceCase(12345)).toThrow(TypeError);
 	});
 });

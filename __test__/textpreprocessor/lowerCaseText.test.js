@@ -1,4 +1,4 @@
-const TextProcessor = require("../core/TextProcessor");
+const TextProcessor = require("../../core/TextProcessor");
 
 describe("TextProcessor", () => {
 	let textProcessor;
@@ -9,7 +9,7 @@ describe("TextProcessor", () => {
 
 	/**
 	 *
-	 * LowerCaseText 
+	 * LowerCaseText
 	 *
 	 */
 

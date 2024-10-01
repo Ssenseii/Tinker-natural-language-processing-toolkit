@@ -1,4 +1,4 @@
-const TextProcessor = require("../core/TextProcessor"); // Assuming your TextProcessor class is in core/TextProcessor.js
+const TextProcessor = require("../../core/TextProcessor"); // Assuming your TextProcessor class is in core/TextProcessor.js
 
 describe("TextProcessor - replaceEmojis", () => {
 	let textProcessor;
@@ -29,7 +29,7 @@ describe("TextProcessor - replaceEmojis", () => {
 
 	test("replaceEmojis should replace multiple emojis with their names", () => {
 		const inputText = "I love coding 😄 💻";
-		const expectedOutput = "I love coding grinning face with smiling eyes laptop"; 
+		const expectedOutput = "I love coding grinning face with smiling eyes laptop";
 		const result = textProcessor.replaceEmojis(inputText);
 
 		expect(result).toBe(expectedOutput);
@@ -37,7 +37,7 @@ describe("TextProcessor - replaceEmojis", () => {
 
 	test("replaceEmojis should replace emojis even if repeated", () => {
 		const inputText = "Smiling faces all around 😀 😀";
-		const expectedOutput = "Smiling faces all around grinning face grinning face"; 
+		const expectedOutput = "Smiling faces all around grinning face grinning face";
 		const result = textProcessor.replaceEmojis(inputText);
 
 		expect(result).toBe(expectedOutput);
@@ -51,5 +51,4 @@ describe("TextProcessor - replaceEmojis", () => {
 
 		expect(result).toBe(expectedOutput);
 	});
-
 });

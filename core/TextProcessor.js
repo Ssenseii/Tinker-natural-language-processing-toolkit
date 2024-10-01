@@ -108,7 +108,7 @@ class TextProcessor {
 			// not a string
 			if (typeof t !== "string") {
 				throw new TypeError(
-					"TextProcessor - removeStopwords(text) |  Input must be a string"
+					"TextProcessor - normalizeText(text) |  Input must be a string"
 				);
 			}
 

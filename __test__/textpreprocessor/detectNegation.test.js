@@ -1,4 +1,4 @@
-const TextProcessor = require("../core/TextProcessor");
+const TextProcessor = require("../../core/TextProcessor");
 
 describe("TextProcessor", () => {
 	let textProcessor;
@@ -41,7 +41,7 @@ describe("TextProcessor", () => {
 		});
 
 		test("should throw an error for non-string input", () => {
-			const inputText = 12345; 
+			const inputText = 12345;
 			expect(() => {
 				textProcessor.detectNegations(inputText);
 			}).toThrow(TypeError);
@@ -49,7 +49,7 @@ describe("TextProcessor", () => {
 
 		test("should handle leading and trailing spaces", () => {
 			const inputText = "   I do not like this. , this is not what I wanted    ";
-			const expectedOutput = "   I do [/not/] like this. , this is [/not/] what I wanted    "; 
+			const expectedOutput = "   I do [/not/] like this. , this is [/not/] what I wanted    ";
 			const outputText = textProcessor.detectNegations(inputText);
 
 			expect(outputText).toBe(expectedOutput);
