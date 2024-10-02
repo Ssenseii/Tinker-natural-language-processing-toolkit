@@ -1,11 +1,11 @@
 /**
  *  1. Tokenization
  *
- *  
+ *
  * Tokenization is the process of breaking down text into smaller, meaningful units, known as tokens.
- * These tokens can be words, sentences, or even individual characters, depending on the level of tokenization. 
+ * These tokens can be words, sentences, or even individual characters, depending on the level of tokenization.
  * The process is a fundamental step in natural language processing (NLP) and text analysis.
- * 
+ *
  *  Current List of Functions:
  *
  * `tokenizeWords(text)`: Split the input text into individual words.
@@ -40,13 +40,11 @@ const log = require("../utils/logger");
 
 /// Functions / Algorithms
 const TextProcessor = require("./TextProcessor");
-let txtpps = new TextProcessor;
+let txtpps = new TextProcessor();
 
 /// Sets, lists and Dictionnaries
 
 /* English */
-
-
 
 class Tokenizer {
 	tokenizeChars(t) {
@@ -115,11 +113,15 @@ class Tokenizer {
 		try {
 			// not a string
 			if (typeof t !== "string") {
-				throw new TypeError("Tokenize - subwordTokenize(text, vocabSize) |  Input must be a string");
+				throw new TypeError(
+					"Tokenize - subwordTokenize(text, vocabSize) |  Input must be a string"
+				);
 			}
 
 			if (typeof vocabSize !== "number") {
-				throw new TypeError("Tokenize - subwordTokenize(text, vocabSize) |  VocabSize must be a Integer");
+				throw new TypeError(
+					"Tokenize - subwordTokenize(text, vocabSize) |  VocabSize must be a Integer"
+				);
 			}
 
 			// empty string case
@@ -181,6 +183,71 @@ class Tokenizer {
 			});
 		} catch (err) {
 			log("Error: Tokenizer - subwordTokenize", { input: t, output: nt }, err);
+			return t;
+		}
+	}
+
+	tokenizeOnPunctuation(t) {
+		let nt;
+		try {
+			// not a string
+			if (typeof t !== "string") {
+				throw new TypeError(
+					"Tokenize - tokenizeOnPunctuation(text) |  Input must be a string"
+				);
+			}
+
+			// empty string case
+			if (t.trim() === "") return t;
+
+			nt = txtpps.normalizeWhitespace(t).split(/[.,!?;:(){}[\]'"-\s]+/);
+
+			return nt;
+		} catch (err) {
+			log("Error: Tokenizer - tokenizeOnPunctuation", { input: t, output: nt }, err);
+			return t;
+		}
+	}
+
+	splitOnNewline(t) {
+		let nt;
+		try {
+			// not a string
+			if (typeof t !== "string") {
+				throw new TypeError("Tokenize - splitOnNewline(text) |  Input must be a string");
+			}
+
+			// empty string case
+			if (t.trim() === "") return t;
+
+			nt = txtpps.normalizeWhitespace(t).split(/\n/);
+
+			return nt;
+		} catch (err) {
+			log("Error: Tokenizer - splitOnNewline", { input: t, output: nt }, err);
+			return t;
+		}
+	}
+
+	whitespaceTokenize(t) {
+		let nt;
+
+		try {
+			// not a string
+			if (typeof t !== "string") {
+				throw new TypeError(
+					"Tokenize - whitespaceTokenize(text) |  Input must be a string"
+				);
+			}
+
+			// empty string case
+			if (t.trim() === "") return t;
+
+			nt = t.split(" ");
+
+			return nt;
+		} catch (err) {
+			log("Error: Tokenizer - whitespaceTokenize", { input: t, output: nt }, err);
 			return t;
 		}
 	}
