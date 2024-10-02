@@ -48,23 +48,18 @@ let txtpps = new TextProcessor;
 
 
 
-class Tokenizer{
-    
-
-    tokenizeChars(t){
-        let nt;
+class Tokenizer {
+	tokenizeChars(t) {
+		let nt;
 		try {
 			// not a string
 			if (typeof t !== "string") {
-				throw new TypeError(
-					"Tokenize - tokenizeChars(text) |  Input must be a string"
-				);
+				throw new TypeError("Tokenize - tokenizeChars(text) |  Input must be a string");
 			}
 
 			// empty string case
 			if (t.trim() === "") return t;
 
-			
 			nt = txtpps.normalizeWhitespace(t).split("");
 
 			return nt;
@@ -72,22 +67,19 @@ class Tokenizer{
 			log("Error: Tokenizer - tokenizeChars", { input: t, output: nt }, err);
 			return t;
 		}
-    }
+	}
 
-    tokenizeWords(t){
-        let nt;
+	tokenizeWords(t) {
+		let nt;
 		try {
 			// not a string
 			if (typeof t !== "string") {
-				throw new TypeError(
-					"Tokenize - tokenizeWords(text) |  Input must be a string"
-				);
+				throw new TypeError("Tokenize - tokenizeWords(text) |  Input must be a string");
 			}
 
 			// empty string case
 			if (t.trim() === "") return t;
 
-			
 			nt = txtpps.normalizeWhitespace(t).match(/\b\w+\b/g);
 
 			return nt;
@@ -95,23 +87,19 @@ class Tokenizer{
 			log("Error: Tokenizer - tokenizeWords", { input: t, output: nt }, err);
 			return t;
 		}
-    }
+	}
 
-
-    tokenizeSentence(t){
-        let nt;
+	tokenizeSentence(t) {
+		let nt;
 		try {
 			// not a string
 			if (typeof t !== "string") {
-				throw new TypeError(
-					"Tokenize - tokenizeSentence(text) |  Input must be a string"
-				);
+				throw new TypeError("Tokenize - tokenizeSentence(text) |  Input must be a string");
 			}
 
 			// empty string case
 			if (t.trim() === "") return t;
 
-			
 			nt = txtpps.normalizeWhitespace(t).match(/[^.!?]+[.!?]+[\])'"`]*|.+$/g);
 
 			return nt;
@@ -119,8 +107,83 @@ class Tokenizer{
 			log("Error: Tokenizer - tokenizeSentence", { input: t, output: nt }, err);
 			return t;
 		}
-    }
+	}
 
+	/// Using Byte-Pair Encoding
+	subwordTokenize(t, vocabSize) {
+		let nt;
+		try {
+			// not a string
+			if (typeof t !== "string") {
+				throw new TypeError("Tokenize - subwordTokenize(text, vocabSize) |  Input must be a string");
+			}
+
+			if (typeof vocabSize !== "number") {
+				throw new TypeError("Tokenize - subwordTokenize(text, vocabSize) |  VocabSize must be a Integer");
+			}
+
+			// empty string case
+			if (t.trim() === "") return t;
+
+			// Initialize vocabulary with characters from the text
+			let vocab = {};
+			let words = t.split(/\s+/).map((word) => word.split(""));
+
+			// Function to count the frequency of pairs
+			const getPairs = (words) => {
+				let pairs = {};
+				for (let w of words) {
+					for (let i = 0; i < w.length - 1; i++) {
+						const pair = w[i] + " " + w[i + 1];
+						if (!pairs[pair]) {
+							pairs[pair] = 0;
+						}
+						pairs[pair]++;
+					}
+				}
+				return pairs;
+			};
+
+			// Create a simple string representation for each word
+			const joinWords = (words) => words.map((w) => w.join("")).join(" ");
+
+			// Main BPE loop to merge pairs
+			while (Object.keys(vocab).length < vocabSize) {
+				let pairs = getPairs(words);
+				if (!Object.keys(pairs).length) break; // No more pairs to merge
+
+				// Find the most frequent pair
+				let bestPair = Object.keys(pairs).reduce((a, b) => (pairs[a] > pairs[b] ? a : b));
+
+				// Merge the most frequent pair in all words
+				words = words.map((word) => {
+					let newWord = [];
+					let i = 0;
+					while (i < word.length) {
+						if (i < word.length - 1 && word[i] + " " + word[i + 1] === bestPair) {
+							newWord.push(word[i] + word[i + 1]); // Merge pair
+							i += 2;
+						} else {
+							newWord.push(word[i]);
+							i++;
+						}
+					}
+					return newWord;
+				});
+
+				// Add the new pair to the vocabulary
+				vocab[bestPair.replace(" ", "")] = true;
+			}
+
+			return (nt = {
+				vocabulary: vocab,
+				tokenizedText: joinWords(words),
+			});
+		} catch (err) {
+			log("Error: Tokenizer - subwordTokenize", { input: t, output: nt }, err);
+			return t;
+		}
+	}
 }
 
 module.exports = Tokenizer;
