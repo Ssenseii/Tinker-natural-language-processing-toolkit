@@ -251,6 +251,48 @@ class Tokenizer {
 			return t;
 		}
 	}
+
+	splitOnComma(t) {
+		let nt;
+
+		try {
+			// not a string
+			if (typeof t !== "string") {
+				throw new TypeError("Tokenize - splitOnComma(text) |  Input must be a string");
+			}
+
+			// empty string case
+			if (t.trim() === "") return t;
+
+			nt = t.split(",");
+
+			return nt;
+		} catch (err) {
+			log("Error: Tokenizer - splitOnComma", { input: t, output: nt }, err);
+			return t;
+		}
+	}
+
+	splitOnPeriod(t) {
+		let nt;
+
+		try {
+			// not a string
+			if (typeof t !== "string") {
+				throw new TypeError("Tokenize - splitOnPeriod(text) |  Input must be a string");
+			}
+
+			// empty string case
+			if (t.trim() === "") return t;
+
+			nt = t.split(".");
+
+			return nt;
+		} catch (err) {
+			log("Error: Tokenizer - splitOnPeriod", { input: t, output: nt }, err);
+			return t;
+		}
+	}
 }
 
 module.exports = Tokenizer;
