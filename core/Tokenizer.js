@@ -293,6 +293,73 @@ class Tokenizer {
 			return t;
 		}
 	}
+
+	ngramWords(t, n) {
+		let nt = [];
+
+		try {
+			// not a string
+			if (typeof t !== "string") {
+				throw new TypeError(
+					"Tokenize - ngramWords(text, number) |  Input must be a string"
+				);
+			}
+
+			// empty string case
+			if (t.trim() === "") return t;
+
+			const words = t.split(/\s+/); 
+
+			if (n <= 0 || n > words.length) {
+				return [];
+			}
+
+			for (let i = 0; i <= words.length - n; i++) {
+				nt.push(words.slice(i, i + n).join(" "));
+			}
+
+			return nt;
+
+			return nt;
+		} catch (err) {
+			log("Error: Tokenizer - ngramWords", { input: t, output: nt }, err);
+			return t;
+		}
+	}
+
+
+	ngramSentences(t, n) {
+		let nt = [];
+
+		try {
+			// not a string
+			if (typeof t !== "string") {
+				throw new TypeError(
+					"Tokenize - ngramSentences(text, number) |  Input must be a string"
+				);
+			}
+
+			// empty string case
+			if (t.trim() === "") return t;
+
+			const sentences = this.tokenizeSentence(t); 
+
+			if (n <= 0 || n > sentences.length) {
+				return [];
+			}
+
+			for (let i = 0; i <= sentences.length - n; i++) {
+				nt.push(sentences.slice(i, i + n).join(" "));
+			}
+
+			return nt;
+
+			return nt;
+		} catch (err) {
+			log("Error: Tokenizer - ngramSentences", { input: t, output: nt }, err);
+			return t;
+		}
+	}
 }
 
 module.exports = Tokenizer;

@@ -3,5 +3,5 @@ const tkner = new Tokenizer;
 
 console.log(typeof 45)
 console.log(
-    tkner.splitOnPeriod("This is a big ass Sentence  ?       wit.h many          mobing patr", 1000)
+	tkner.ngramSentences("This is a big ass Sentence  ?       wit.h many          mobing patr", 2)
 );
