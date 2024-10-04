@@ -294,7 +294,7 @@ class Tokenizer {
 		}
 	}
 
-	ngramWords(t, n) {
+	ngramWords(t, n = 2) {
 		let nt = [];
 
 		try {
@@ -308,7 +308,7 @@ class Tokenizer {
 			// empty string case
 			if (t.trim() === "") return t;
 
-			const words = t.split(/\s+/); 
+			const words = t.split(/\s+/);
 
 			if (n <= 0 || n > words.length) {
 				return [];
@@ -319,16 +319,13 @@ class Tokenizer {
 			}
 
 			return nt;
-
-			return nt;
 		} catch (err) {
 			log("Error: Tokenizer - ngramWords", { input: t, output: nt }, err);
 			return t;
 		}
 	}
 
-
-	ngramSentences(t, n) {
+	ngramSentences(t, n = 2) {
 		let nt = [];
 
 		try {
@@ -342,7 +339,7 @@ class Tokenizer {
 			// empty string case
 			if (t.trim() === "") return t;
 
-			const sentences = this.tokenizeSentence(t); 
+			const sentences = this.tokenizeSentence(t);
 
 			if (n <= 0 || n > sentences.length) {
 				return [];
@@ -353,11 +350,69 @@ class Tokenizer {
 			}
 
 			return nt;
-
-			return nt;
 		} catch (err) {
 			log("Error: Tokenizer - ngramSentences", { input: t, output: nt }, err);
 			return t;
+		}
+	}
+
+	cleanAndTokenize(t) {
+		let nt = [];
+
+		try {
+			// not a string
+			if (typeof t !== "string") {
+				throw new TypeError("Tokenize - cleanAndTokenize(text) |  Input must be a string");
+			}
+
+			// empty string case
+			if (t.trim() === "") return t;
+
+			const ct = txtpps.cleanText(t);
+			nt = this.tokenizeWords(t);
+
+			return nt;
+		} catch (err) {
+			log("Error: Tokenizer - cleanAndTokenize", { input: t, output: nt }, err);
+			return t;
+		}
+	}
+
+	removeEmptyToken(arr) {
+		let res = [];
+
+		try {
+			// Check if input is not an array
+			if (!Array.isArray(arr)) {
+				throw new TypeError("Tokenize - removeEmptyToken(array) | Input must be an array");
+			}
+
+			res = arr.filter((item) =>
+				typeof item === "string" ? item.trim() !== "" : Boolean(item)
+			);
+
+			return res;
+		} catch (err) {
+			console.error("Error: Tokenize - removeEmptyToken", { input: arr, output: res }, err);
+			return arr;
+		}
+	}
+	
+	countTokens(arr) {
+		let res = [];
+
+		try {
+			// Check if input is not an array
+			if (!Array.isArray(arr)) {
+				throw new TypeError("Tokenize - countTokens(array) | Input must be an array");
+			}
+
+			res = arr.length();
+
+			return res;
+		} catch (err) {
+			console.error("Error: Tokenize - countTokens", { input: arr, output: res }, err);
+			return arr;
 		}
 	}
 }
