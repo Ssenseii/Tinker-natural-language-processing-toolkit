@@ -1,7 +1,8 @@
+const PosTagger = require("./core/PosTagger");
 const Tokenizer = require("./core/Tokenizer")
-const tkner = new Tokenizer;
+const posTagger = new PosTagger;
 
-console.log(typeof 45)
-console.log(
-	tkner.removeEmptyToken(["", "ref", " ", "dsdsds"])
-);
+const sentence = "The quick brown fox jumps over the lazy dog.";
+const result = posTagger.posTagging(sentence);
+console.log(result);
+

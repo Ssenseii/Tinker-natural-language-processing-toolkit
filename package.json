@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "cheerio": "^1.0.0",
-    "colors": "^1.4.0"
+    "colors": "^1.4.0",
+    "compromise": "^14.14.0"
   }
 }
