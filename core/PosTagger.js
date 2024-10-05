@@ -45,14 +45,24 @@ const log = require("../utils/logger");
 
 class PosTagger {
 	posTagging(s) {
-        let nt;
+		let nt;
 		try {
+			// not a string
+			if (typeof s !== "string") {
+				throw new TypeError("PosTagger - posTagging(sentence) |  Input must be a string");
+			}
+
+			// empty string case
+			if (s.trim() === "") {
+				return [];
+			}
+
 			const doc = nlp(s);
 
 			const terms = doc.terms().json();
 
 			nt = terms.map((term) => {
-                return {
+				return {
 					word: term.text,
 					pos: term.terms[0].tags[0],
 				};
@@ -60,9 +70,62 @@ class PosTagger {
 
 			return nt;
 		} catch (err) {
-			log("Error: TextProcessor - NormalizeText", { input: s, output: nt }, err);
+			log("Error: PosTagger - posTagging(sentence)", { input: s, output: nt }, err);
 			return s;
 		}
+	}
+
+	getWord(s, t) {
+		let nt = [];
+		try {
+			// not a string
+			if (typeof s !== "string") {
+				throw new TypeError("PosTagger - getNouns(sentence) |  Input must be a string");
+			}
+
+			// empty string case
+			if (s.trim() === "") {
+				return [];
+			}
+
+			let results = this.posTagging(s);
+
+			for (let result of results) {
+                if (result.pos.toLowerCase() == t ) {
+					nt.push(result);
+				}
+			}
+
+			return nt;
+		} catch (err) {
+			log("Error: TextProcessor - getNouns", { input: s, output: nt }, err);
+			return s;
+		}
+	}
+
+	// Get adjectives from the sentence
+	getAdjectives(sentence) {
+		return this.getWord(sentence, "adjective");
+	}
+
+	// Get nouns from the sentence
+	getNouns(sentence) {
+		return this.getWord(sentence, "noun");
+	}
+
+	// Get verbs from the sentence
+	getVerbs(sentence) {
+		return this.getWord(sentence, "verb");
+	}
+
+	// Get adverbs from the sentence
+	getAdverbs(sentence) {
+		return this.getWord(sentence, "adverb");
+	}
+	
+    // Get conjunctions from the sentence
+	getAdverbs(sentence) {
+		return this.getWord(sentence, "conjunction");
 	}
 }
 

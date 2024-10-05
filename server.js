@@ -2,7 +2,9 @@ const PosTagger = require("./core/PosTagger");
 const Tokenizer = require("./core/Tokenizer")
 const posTagger = new PosTagger;
 
-const sentence = "The quick brown fox jumps over the lazy dog.";
-const result = posTagger.posTagging(sentence);
+const sentence = "I am who I am";
+const pos = posTagger.posTagging(sentence);
+const result = posTagger.getVerbs(sentence);
+console.log(pos);
 console.log(result);
 
