@@ -43,6 +43,10 @@ const log = require("../utils/logger");
 
 /* English */
 
+const en_pronouns = require("../lib/pronouns/en_pronouns");
+
+/* Core  */
+
 class PosTagger {
 	posTagging(s) {
 		let nt;
@@ -80,7 +84,7 @@ class PosTagger {
 		try {
 			// not a string
 			if (typeof s !== "string") {
-				throw new TypeError("PosTagger - getNouns(sentence) |  Input must be a string");
+				throw new TypeError(`PosTagger - get${t}(sentence) |  Input must be a string`);
 			}
 
 			// empty string case
@@ -91,14 +95,14 @@ class PosTagger {
 			let results = this.posTagging(s);
 
 			for (let result of results) {
-                if (result.pos.toLowerCase() == t ) {
+				if (result.pos.toLowerCase() == t) {
 					nt.push(result);
 				}
 			}
 
 			return nt;
 		} catch (err) {
-			log("Error: TextProcessor - getNouns", { input: s, output: nt }, err);
+			log(`Error: TextProcessor - get${t}`, { input: s, output: nt }, err);
 			return s;
 		}
 	}
@@ -122,10 +126,38 @@ class PosTagger {
 	getAdverbs(sentence) {
 		return this.getWord(sentence, "adverb");
 	}
-	
-    // Get conjunctions from the sentence
+
+	// Get conjunctions from the sentence
 	getAdverbs(sentence) {
 		return this.getWord(sentence, "conjunction");
+	}
+
+	getPronouns(s) {
+		let nt = [];
+		try {
+			// not a string
+			if (typeof s !== "string") {
+				throw new TypeError("PosTagger - getPronouns(sentence) |  Input must be a string");
+			}
+
+			// empty string case
+			if (s.trim() === "") {
+				return [];
+			}
+
+			let results = this.posTagging(s);
+
+			for (let result of results) {
+				if (typeof result.word === "string" && en_pronouns.has(result.word.toLowerCase())) {
+					nt.push(result);
+				}
+			}
+
+			return nt;
+		} catch (err) {
+			log(`Error: TextProcessor - getPronouns`, { input: s, output: nt }, err);
+			return s;
+		}
 	}
 }
 
