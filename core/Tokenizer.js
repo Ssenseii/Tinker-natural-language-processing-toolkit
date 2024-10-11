@@ -209,6 +209,26 @@ class Tokenizer {
 		}
 	}
 
+	customDelimeterTokenize(t, cus) {
+		let nt;
+		try {
+			// not a string
+			if (typeof t !== "string") {
+				throw new TypeError("Tokenize - customDelimiter(text) |  Input must be a string");
+			}
+
+			// empty string case
+			if (t.trim() === "") return t;
+
+			nt = txtpps.normalizeWhitespace(t).split(`${cus}`);
+
+			return nt;
+		} catch (err) {
+			log("Error: Tokenizer - customDelimiter", { input: t, output: nt }, err);
+			return t;
+		}
+	}
+
 	splitOnNewline(t) {
 		let nt;
 		try {

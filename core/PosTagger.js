@@ -128,7 +128,7 @@ class PosTagger {
 	}
 
 	// Get conjunctions from the sentence
-	getAdverbs(sentence) {
+	getConjunctions(sentence) {
 		return this.getWord(sentence, "conjunction");
 	}
 
@@ -148,6 +148,7 @@ class PosTagger {
 			let results = this.posTagging(s);
 
 			for (let result of results) {
+				console.log(result.word.toLowerCase());
 				if (typeof result.word === "string" && en_pronouns.has(result.word.toLowerCase())) {
 					nt.push(result);
 				}
